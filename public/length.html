@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="top">
+    <h1 class="title">Unit Converter</h1>
+      <nav class="navbar">
+        <ul>
+          <li><a href="length.html">Length</a></li>
+          <li><a href="weight.html">Weight</a></li>
+          <li><a href="temperature.html">Temperature</a></li>
+        </ul>
+      </nav>
+  </div>
+  <div class="description">
+    <h2>Available Units: mm (millimeters), cm (centimeters), m (meters)</h2>
+  </div>
+  <div class="inputs">
+    <form action="" id="unitForm">
+      <label>Enter length to convert<input type="text" class="input" name="value"></label>
+      <label>Enter unit to convert from<input type="text" class="input" name="firstUnit"></label>
+      <label>Enter unit to convert to<input type="text" class="input" name="lastUnit"></label>
+      <button class="input">Submit</button>
+    </form>
+  </div>
+  <div id="results_page">
+    <h2>Result of your calculation</h2>
+    <h3 id="results"></h3>
+    <button id='reset'class="input">Reset</button> 
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
