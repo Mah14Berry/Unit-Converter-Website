@@ -19,33 +19,46 @@ app.post('/api/submit', (req,res)=>{
   console.log(req.body);
   //parse request body for values that will be used for calculation
   const {value, firstUnit, lastUnit, type} = req.body;
+  let num = parseFloat(value);
+  if(Number.isNaN(num)) return res.status(400).json({error: "Value must be a real number."});
 
   if(lastUnit === firstUnit){
-    convertedValue = value;
+    convertedValue = num;
     res.json(convertedValue);
   }
+
   //if type is length or unit, just multiply with associated scalar
   if(type === 'length'){
-    scalar = lengthUnits[length.indexOf(firstUnit)][length.indexOf(lastUnit)];
+    try{
+      scalar = lengthUnits[length.indexOf(firstUnit)][length.indexOf(lastUnit)];
+      if((typeof scalar) !== 'number') throw new Error();
+    } catch(err){
+      return res.status(400).json({error: "Invalid Unit"});
+    }
     console.log('scalar: ' + scalar);
-    convertedValue = parseFloat(value) * scalar;
+    convertedValue = num * scalar;
   } else if(type === 'weight'){
-    scalar = weightUnits[weight.indexOf(firstUnit)][weight.indexOf(lastUnit)];
+    try{
+      scalar = weightUnits[weight.indexOf(firstUnit)][weight.indexOf(lastUnit)];
+      if((typeof scalar) !== 'number') throw new Error();
+    } catch(err){
+      return res.status(400).json({error: "Invalid Unit"});      
+    }
     console.log('scalar: ' + scalar);
-    convertedValue = parseFloat(value) * scalar;
+    convertedValue = num * scalar;
     //temperature conversions include offsets, so they're calculated manually
   } else if(type === 'temperature'){ //*** apply a temperature array for this
     if(firstUnit === 'cel'){
-      if(lastUnit === 'fah') {convertedValue = parseFloat(value) * 1.8 + 32;}
-      if(lastUnit === 'kel') {convertedValue = parseFloat(value) + 273.15;}
+      if(lastUnit === 'fah') {convertedValue = num * 1.8 + 32;}
+      if(lastUnit === 'kel') {convertedValue = num + 273.15;}
     }
     if(firstUnit === 'fah'){
-      if(lastUnit === 'cel') {convertedValue = (parseFloat(value) - 32) * (5/9);}
-      if(lastUnit === 'kel') {convertedValue = ((parseFloat(value) - 32) * (5/9)) + 273.15;}
+      if(lastUnit === 'cel') {convertedValue = (num - 32) * (5/9);}
+      if(lastUnit === 'kel') {convertedValue = ((num - 32) * (5/9)) + 273.15;}
     }
     if(firstUnit === 'kel'){
-      if(lastUnit === 'cel') {convertedValue = parseFloat(value) - 273.15;}
-      if(lastUnit === 'fah') {convertedValue = (parseFloat(value) - 273.15) * 1.8 + 32;}
+      if(lastUnit === 'cel') {convertedValue = num - 273.15;}
+      if(lastUnit === 'fah') {convertedValue = (num - 273.15) * 1.8 + 32;}
     }
   } 
   console.log('converted value: ' + convertedValue);
