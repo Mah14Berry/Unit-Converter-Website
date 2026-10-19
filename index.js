@@ -20,6 +20,10 @@ app.post('/api/submit', (req,res)=>{
   //parse request body for values that will be used for calculation
   const {value, firstUnit, lastUnit, type} = req.body;
 
+  if(lastUnit === firstUnit){
+    convertedValue = value;
+    res.json(convertedValue);
+  }
   //if type is length or unit, just multiply with associated scalar
   if(type === 'length'){
     scalar = lengthUnits[length.indexOf(firstUnit)][length.indexOf(lastUnit)];
@@ -30,7 +34,7 @@ app.post('/api/submit', (req,res)=>{
     console.log('scalar: ' + scalar);
     convertedValue = parseFloat(value) * scalar;
     //temperature conversions include offsets, so they're calculated manually
-  } else if(type === 'temperature'){
+  } else if(type === 'temperature'){ //*** apply a temperature array for this
     if(firstUnit === 'cel'){
       if(lastUnit === 'fah') {convertedValue = parseFloat(value) * 1.8 + 32;}
       if(lastUnit === 'kel') {convertedValue = parseFloat(value) + 273.15;}

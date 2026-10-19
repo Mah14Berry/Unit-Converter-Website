@@ -22,19 +22,23 @@ document.getElementById('unitForm').addEventListener('submit', async (e)=>{
   }
 
   //send formdata to server
-  const response = await fetch('/api/submit', { 
+  const res = await fetch('/api/submit', { 
     method: 'POST', 
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify(data)
   });
 
   //await response from server -> results page
-  const result = await response.json();
-  const result_display = result;
+  const result = await res.json();
+  // const result_display = result;
   document.querySelector('.description').style.display = 'none';  
   document.querySelector('.inputs').style.display = 'none';  
   document.getElementById('results_page').style.display = 'block';
-  document.getElementById('results').textContent = result_display;
+  if(res.ok){
+    document.getElementById('results').textContent = result;
+  } else {
+    document.getElementById('results').textContent = result.error;
+  }
   console.log(result);
 });
 
