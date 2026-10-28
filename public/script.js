@@ -30,10 +30,10 @@ document.getElementById('unitForm').addEventListener('submit', async (e)=>{
 
   //await response from server -> results page
   const result = await res.json();
-  // const result_display = result;
   document.querySelector('.description').style.display = 'none';  
   document.querySelector('.inputs').style.display = 'none';  
   document.getElementById('results_page').style.display = 'block';
+  //checking for errors while converting
   if(res.ok){
     document.getElementById('results').textContent = result;
   } else {

@@ -5,8 +5,6 @@ const lengthUnits = [[1,100,1000],[0.01,1,10],[0.001,0.1,1]];
 const weightUnits = [[1,1000,1000000],[0.001,1,1000],[0.000001,0.001,1]];
 const length = ['m','cm','mm'];
 const weight = ['kg','g','mg'];
-let scalar = 0;
-let convertedValue = 0;
 
 //express setup
 const express = require('express');
@@ -19,13 +17,12 @@ app.post('/api/submit', (req,res)=>{
   console.log(req.body);
   //parse request body for values that will be used for calculation
   const {value, firstUnit, lastUnit, type} = req.body;
+  //used for calculating length and weight conversions
+  let scalar = 0;
+  //value to send back
+  let convertedValue = 0;
   let num = parseFloat(value);
   if(Number.isNaN(num)) return res.status(400).json({error: "Value must be a real number."});
-
-  if(lastUnit === firstUnit){
-    convertedValue = num;
-    res.json(convertedValue);
-  }
 
   //if type is length or unit, just multiply with associated scalar
   if(type === 'length'){
@@ -48,6 +45,15 @@ app.post('/api/submit', (req,res)=>{
     convertedValue = num * scalar;
     //temperature conversions include offsets, so they're calculated manually
   } else if(type === 'temperature'){ //*** apply a temperature array for this
+    const temp = ['cel', 'fah', 'kel'];
+    try{
+      if(!temp.includes(firstUnit) || !temp.includes(lastUnit)){
+        throw new Error();
+      }
+    } catch(err){
+      return res.status(400).json({error: "Invalid Unit"});
+    }
+    convertedValue = num;
     if(firstUnit === 'cel'){
       if(lastUnit === 'fah') {convertedValue = num * 1.8 + 32;}
       if(lastUnit === 'kel') {convertedValue = num + 273.15;}
